@@ -1,0 +1,18 @@
+### Регистрация нового юзера
+POST http://localhost:8090/profile/set
+Content-Type: application/json
+
+{
+  "userId": "userId",
+  "data": {
+    "key": "value",
+    "key1": 13,
+    "key3": {
+      "d": 1
+    },
+    "key4": [
+      "a",
+      "b"
+    ]
+  }
+}

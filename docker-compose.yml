@@ -1,0 +1,32 @@
+version: '1.0'
+
+services:
+  mongo:
+    image: mongo:5.0
+    container_name: 'mongodb'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: profile_db
+    volumes:
+      - ./assets/db_data/mongo:/data/db
+    ports:
+      - 27017:27017
+  profile:
+    build: ./
+    container_name: 'mission-profile'
+    networks:
+      - mission-gateway_mission
+      - back
+    ports:
+      - 8082:8082
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: profile_db
+networks:
+  back:
+    driver: bridge
+    name: back_network
+  mission-gateway_mission:
+    external: true
