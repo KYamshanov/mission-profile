@@ -1,6 +1,7 @@
-### Регистрация нового юзера
-POST http://localhost:8090/profile/set
+### Изменение профиля пользователя
+POST http://localhost:80/profile/private/set
 Content-Type: application/json
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkMGY0YjQ1ZC02YmEzLTQwYWUtYjk4OS1jNWM1ODNkYzVhZTUiLCJ0dHlwZSI6ImFjY2VzcyIsInJvbGVzIjpbXSwiZXhwIjoxNjczNzIxMDM1LCJqdGkiOiJlNGYwZTk4OTAxZjc0OTg3YTM1NTI0MzliY2VhZjg0NiJ9.DLOxRM9BWOOkXXCT1cpQYVvch6mMUwvLXQHXKCe_WUQ
 
 {
   "userId": "userId",
@@ -12,7 +13,12 @@ Content-Type: application/json
     },
     "key4": [
       "a",
-      "b"
+      "cc"
     ]
   }
 }
+
+
+### Получение профиля пользователя
+GET http://localhost:80/profile/get
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkMGY0YjQ1ZC02YmEzLTQwYWUtYjk4OS1jNWM1ODNkYzVhZTUiLCJ0dHlwZSI6ImFjY2VzcyIsInJvbGVzIjpbXSwiZXhwIjoxNjczNzIxMDM1LCJqdGkiOiJlNGYwZTk4OTAxZjc0OTg3YTM1NTI0MzliY2VhZjg0NiJ9.DLOxRM9BWOOkXXCT1cpQYVvch6mMUwvLXQHXKCe_WUQ

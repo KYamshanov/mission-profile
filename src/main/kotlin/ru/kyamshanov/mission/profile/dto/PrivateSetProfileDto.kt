@@ -1,5 +1,6 @@
 package ru.kyamshanov.mission.profile.dto
 
-data class SetProfileDtoRq(
+data class PrivateSetProfileDtoRq(
+    val userId: String,
     val data: Map<String, Any>
 )
