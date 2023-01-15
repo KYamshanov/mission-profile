@@ -9,7 +9,8 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: password
       MONGO_INITDB_DATABASE: profile_db
     volumes:
-      - ./assets/db_data/mongo:/data
+      - ./assets/db_data/mongo/db:/data/db
+      - ./assets/db_data/mongo/configdb:/data/configdb
     networks:
       - profile_back
   profile:

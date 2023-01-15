@@ -5,14 +5,12 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import ru.kyamshanov.mission.profile.dto.GetProfileDtoRs
-import ru.kyamshanov.mission.profile.dto.SetProfileDtoRq
 import ru.kyamshanov.mission.profile.model.UserProfile
 import ru.kyamshanov.mission.profile.service.ProfileService
 
 /**
- * Контроллер ролей
- * @property roleService Сервис для управления ролями
- * @property userProcessor Обработчик пользователя
+ * Контроллер профиля пользователя
+ * @property profileService Сервис для управления профилем
  */
 @RestController
 @RequestMapping("/profile")
@@ -36,10 +34,10 @@ internal class ProfileController @Autowired constructor(
     @PostMapping("set")
     suspend fun set(
         @RequestHeader(required = true, value = USER_ID_HEADER_KEY) userId: String,
-        @RequestBody(required = true) body: SetProfileDtoRq
+        @RequestBody(required = true) body: Map<String, Any>
     ): ResponseEntity<Unit> =
         try {
-            profileService.setUserProfile(userId, UserProfile(body.data))
+            profileService.setUserProfile(userId, UserProfile(body))
             ResponseEntity(HttpStatus.OK)
         } catch (e: Throwable) {
             e.printStackTrace()

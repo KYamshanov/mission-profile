@@ -7,6 +7,9 @@ import ru.kyamshanov.mission.profile.model.UserProfile
 import ru.kyamshanov.mission.profile.persistence.ProfileDocument
 import ru.kyamshanov.mission.profile.repository.ProfileCrudRepository
 
+/**
+ * Сервис профилей
+ */
 internal interface ProfileService {
 
     suspend fun getUserProfile(userId: String): UserProfile
