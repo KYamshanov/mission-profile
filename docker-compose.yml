@@ -2,30 +2,34 @@ version: '1.0'
 
 services:
   mongo:
-    image: mongo:5.0
+    image: mongo:6.0.3
     container_name: 'mongodb'
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: password
       MONGO_INITDB_DATABASE: profile_db
     volumes:
-      - ./assets/db_data/mongo:/data/db
-    ports:
-      - 27017:27017
+      - ./assets/db_data/mongo/db:/data/db
+      - ./assets/db_data/mongo/configdb:/data/configdb
+    networks:
+      - profile_back
   profile:
     build: ./
     container_name: 'mission-profile'
     networks:
       - mission-gateway_mission
-      - back
+      - profile_back
     ports:
       - 8082:8082
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: password
       MONGO_INITDB_DATABASE: profile_db
+      MONGO_HOST: mongodb
+      MONGO_PORT: 27017
+      MONGO_AUTH_DATABASE: admin
 networks:
-  back:
+  profile_back:
     driver: bridge
     name: back_network
   mission-gateway_mission:

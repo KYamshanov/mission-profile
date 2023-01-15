@@ -1,18 +1,35 @@
-### Регистрация нового юзера
-POST http://localhost:8090/profile/set
+### Изменение профиля пользователя
+POST http://localhost:80/profile/set
 Content-Type: application/json
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkMGY0YjQ1ZC02YmEzLTQwYWUtYjk4OS1jNWM1ODNkYzVhZTUiLCJ0dHlwZSI6ImFjY2VzcyIsInJvbGVzIjpbXSwiZXhwIjoxNjczNzcwOTQ2LCJqdGkiOiI2ZWZjYzM2Mjc3NTg0M2M1YmQ5NjA1MWI0Y2JjZmE1YiJ9.165g_cpVNZ03V6pgBs3KJ3LhF41_pqkDTq81BPCqe5Y
 
 {
-  "userId": "userId",
+  "key": "value",
+  "v2": [
+    "v1", "v2"
+  ]
+}
+
+### Изменение профиля пользователя
+POST http://localhost:80/profile/private/set
+Content-Type: application/json
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkMGY0YjQ1ZC02YmEzLTQwYWUtYjk4OS1jNWM1ODNkYzVhZTUiLCJ0dHlwZSI6ImFjY2VzcyIsInJvbGVzIjpbXSwiZXhwIjoxNjczNzcwOTQ2LCJqdGkiOiI2ZWZjYzM2Mjc3NTg0M2M1YmQ5NjA1MWI0Y2JjZmE1YiJ9.165g_cpVNZ03V6pgBs3KJ3LhF41_pqkDTq81BPCqe5Y
+
+{
+  "userId": "d0f4b45d-6ba3-40ae-b989-c5c583dc5ae5",
   "data": {
     "key": "value",
-    "key1": 13,
-    "key3": {
-      "d": 1
-    },
-    "key4": [
-      "a",
-      "b"
+    "v2": [
+      "v1",
+      "v200"
     ]
   }
 }
+
+### Получение профиля пользователя
+GET http://localhost:80/profile/get
+Authorization:  eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkMGY0YjQ1ZC02YmEzLTQwYWUtYjk4OS1jNWM1ODNkYzVhZTUiLCJ0dHlwZSI6ImFjY2VzcyIsInJvbGVzIjpbXSwiZXhwIjoxNjczNzcxODY4LCJqdGkiOiJhODMyN2EyYmJiNWE0Yzg2YjYxMmFhZTdkMWQ4ODBhNyJ9.53B5Cjs_cBLGxt6s314SWGkxL9lJ-4brmV6HHU5eOJI
+
+### Изменение профиля пользователя
+GET http://localhost:80/profile/private/get?user_id=d0f4b45d-6ba3-40ae-b989-c5c583dc5ae5
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkMGY0YjQ1ZC02YmEzLTQwYWUtYjk4OS1jNWM1ODNkYzVhZTUiLCJ0dHlwZSI6ImFjY2VzcyIsInJvbGVzIjpbXSwiZXhwIjoxNjczNzcxODY4LCJqdGkiOiJhODMyN2EyYmJiNWE0Yzg2YjYxMmFhZTdkMWQ4ODBhNyJ9.53B5Cjs_cBLGxt6s314SWGkxL9lJ-4brmV6HHU5eOJI
