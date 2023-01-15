@@ -20,7 +20,7 @@ services:
       - mission-gateway_mission
       - profile_back
     ports:
-      - 8082:8082
+      - 8082:80
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: password
@@ -31,6 +31,6 @@ services:
 networks:
   profile_back:
     driver: bridge
-    name: back_network
+    name: profile_back
   mission-gateway_mission:
     external: true
