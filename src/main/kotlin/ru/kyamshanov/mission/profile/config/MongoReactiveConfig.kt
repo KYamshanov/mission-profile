@@ -8,10 +8,11 @@ import com.mongodb.reactivestreams.client.MongoClients
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.data.domain.Sort
 import org.springframework.data.mongodb.ReactiveMongoDatabaseFactory
-import org.springframework.data.mongodb.core.ReactiveMongoClientFactoryBean
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate
 import org.springframework.data.mongodb.core.SimpleReactiveMongoDatabaseFactory
+import org.springframework.data.mongodb.core.index.Index
 import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories
 
 
@@ -49,6 +50,8 @@ class MongoReactiveConfig(
 
     @Bean
     fun reactiveMongoTemplate(factory: ReactiveMongoDatabaseFactory): ReactiveMongoTemplate {
-        return ReactiveMongoTemplate(factory)
+        return ReactiveMongoTemplate(factory).apply {
+            indexOps("documents").ensureIndex(Index("login", Sort.Direction.ASC).unique())
+        }
     }
 }

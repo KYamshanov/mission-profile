@@ -1,6 +1,11 @@
 package ru.kyamshanov.mission.profile.model
 
-@JvmInline
-internal value class UserProfile(
-    val data: Map<String, Any>
-)
+internal data class UserProfile(
+    val id: String,
+    val login: String,
+    val data: Info
+) {
+
+    @JvmInline
+    value class Info(val value: Map<String, Any>)
+}
