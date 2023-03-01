@@ -4,9 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import ru.kyamshanov.mission.profile.dto.GetProfileDtoRs
+import ru.kyamshanov.mission.profile.dto.FetchUserDtoRs
 import ru.kyamshanov.mission.profile.dto.PrivateSetProfileDtoRq
-import ru.kyamshanov.mission.profile.dto.SetProfileDtoRq
 import ru.kyamshanov.mission.profile.model.UserProfile
 import ru.kyamshanov.mission.profile.service.ProfileService
 
@@ -24,11 +23,12 @@ internal class PrivateProfileController @Autowired constructor(
     @GetMapping("get")
     suspend fun get(
         @RequestParam(required = true, value = "user_id") userId: String
-    ): ResponseEntity<GetProfileDtoRs> =
+    ): ResponseEntity<FetchUserDtoRs> =
         try {
-            val profile = profileService.getUserProfile(userId)
-            val response = GetProfileDtoRs(profile.data)
-            ResponseEntity(response, HttpStatus.OK)
+            TODO("Переписать")
+           // val profile =  //profileService.getUserProfile(userId)
+           // val response = FetchUserDtoRs(profile.data)
+            //ResponseEntity(response, HttpStatus.OK)
         } catch (e: Throwable) {
             e.printStackTrace()
             ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -39,7 +39,7 @@ internal class PrivateProfileController @Autowired constructor(
         @RequestBody(required = true) body: PrivateSetProfileDtoRq
     ): ResponseEntity<Unit> =
         try {
-            profileService.setUserProfile(body.userId, UserProfile(body.data))
+            TODO("Переписать")//profileService.setUserProfile(body.userId, UserProfile(body.data))
             ResponseEntity(HttpStatus.OK)
         } catch (e: Throwable) {
             e.printStackTrace()

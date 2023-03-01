@@ -7,4 +7,6 @@ import ru.kyamshanov.mission.profile.persistence.ProfileDocument
 internal interface ProfileCrudRepository : CoroutineCrudRepository<ProfileDocument, String> {
 
     fun findFirstByUserId(userId: String): Flow<ProfileDocument>
+
+    suspend fun findFirstByLogin(login: String): ProfileDocument
 }

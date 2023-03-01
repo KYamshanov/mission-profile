@@ -5,27 +5,64 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import ru.kyamshanov.mission.profile.model.UserProfile
 import ru.kyamshanov.mission.profile.persistence.ProfileDocument
+import ru.kyamshanov.mission.profile.persistence.toUserProfile
 import ru.kyamshanov.mission.profile.repository.ProfileCrudRepository
+import ru.kyamshanov.mission.profile.repository.ProfileRepository
+import java.util.UUID
 
 /**
  * Сервис профилей
  */
 internal interface ProfileService {
 
-    suspend fun getUserProfile(userId: String): UserProfile
+    suspend fun registerUser(login: String, data: UserProfile.Info): UserProfile
 
-    suspend fun setUserProfile(userId: String, profile: UserProfile)
+    suspend fun getUserProfileById(userId: String): UserProfile
+
+    suspend fun getUserProfileByLogin(login: String): UserProfile
+
+    suspend fun setUserProfileInfo(userId: String, profileInfo: UserProfile.Info)
 }
 
 @Service
 internal class ProfileServiceImpl @Autowired constructor(
-    private val profileCrudRepository: ProfileCrudRepository
+    private val profileCrudRepository: ProfileCrudRepository,
+    private val profileRepository: ProfileRepository
 ) : ProfileService {
+    override suspend fun registerUser(login: String, data: UserProfile.Info): UserProfile =
+        profileCrudRepository.save(
+            ProfileDocument(
+                userId = generateUserId(),
+                login = login,
+                profile = data.value
+            )
+        ).toUserProfile()
 
-    override suspend fun getUserProfile(userId: String): UserProfile =
-        UserProfile(profileCrudRepository.findFirstByUserId(userId).first().profile)
+    override suspend fun getUserProfileById(userId: String): UserProfile =
+        profileCrudRepository.findFirstByUserId(userId).first().let { profileDocument ->
+            UserProfile(
+                id = profileDocument.userId,
+                login = profileDocument.login,
+                data = UserProfile.Info(profileDocument.profile)
+            )
+        }
 
-    override suspend fun setUserProfile(userId: String, profile: UserProfile) {
-        profileCrudRepository.save(ProfileDocument(userId, profile.data))
+    override suspend fun getUserProfileByLogin(login: String): UserProfile =
+        profileCrudRepository.findFirstByLogin(login).let { profileDocument ->
+            UserProfile(
+                id = profileDocument.userId,
+                login = profileDocument.login,
+                data = UserProfile.Info(profileDocument.profile)
+            )
+        }
+
+    override suspend fun setUserProfileInfo(userId: String, profileInfo: UserProfile.Info) {
+        profileRepository.mergeProfile(
+            userId = userId,
+            login = null,
+            data = profileInfo.value
+        )
     }
+
+    private fun generateUserId() = UUID.randomUUID().toString()
 }

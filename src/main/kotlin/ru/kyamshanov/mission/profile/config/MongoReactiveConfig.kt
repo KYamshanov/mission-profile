@@ -1,17 +1,11 @@
 package ru.kyamshanov.mission.profile.config
 
-import com.mongodb.ConnectionString
 import com.mongodb.MongoClientSettings
 import com.mongodb.MongoCredential
-import com.mongodb.reactivestreams.client.MongoClient
-import com.mongodb.reactivestreams.client.MongoClients
+import com.mongodb.ServerAddress
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.data.mongodb.ReactiveMongoDatabaseFactory
-import org.springframework.data.mongodb.core.ReactiveMongoClientFactoryBean
-import org.springframework.data.mongodb.core.ReactiveMongoTemplate
-import org.springframework.data.mongodb.core.SimpleReactiveMongoDatabaseFactory
+import org.springframework.data.mongodb.config.AbstractReactiveMongoConfiguration
 import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories
 
 
@@ -30,25 +24,14 @@ class MongoReactiveConfig(
     private val port: Int,
     @Value("\${MONGO_AUTH_DATABASE}")
     private val authDatabase: String
-) {
+) : AbstractReactiveMongoConfiguration() {
+    override fun getDatabaseName(): String = mongoDatabase
 
+    override fun autoIndexCreation(): Boolean = true
 
-    @Bean
-    fun reactiveMongoClient(): MongoClient {
-        val settings = MongoClientSettings.builder()
-            .applyConnectionString(ConnectionString("mongodb://$host:$port/$mongoDatabase"))
+    override fun configureClientSettings(builder: MongoClientSettings.Builder) {
+        builder
             .credential(MongoCredential.createCredential(mongoUsername, authDatabase, mongoPassword.toCharArray()))
-            .build()
-        return MongoClients.create(settings)
-    }
-
-    @Bean
-    fun reactiveMongoDatabaseFactory(client: MongoClient): ReactiveMongoDatabaseFactory {
-        return SimpleReactiveMongoDatabaseFactory(client, mongoDatabase)
-    }
-
-    @Bean
-    fun reactiveMongoTemplate(factory: ReactiveMongoDatabaseFactory): ReactiveMongoTemplate {
-        return ReactiveMongoTemplate(factory)
+            .applyToClusterSettings { settings -> settings.hosts(listOf(ServerAddress(host, port))) }
     }
 }
