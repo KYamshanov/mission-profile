@@ -8,5 +8,5 @@ internal interface ProfileCrudRepository : CoroutineCrudRepository<ProfileDocume
 
     fun findFirstByUserId(userId: String): Flow<ProfileDocument>
 
-    suspend fun findFirstByLogin(login: String): ProfileDocument
+    suspend fun findFirstByLogin(login: String): ProfileDocument?
 }

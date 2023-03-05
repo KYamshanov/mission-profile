@@ -24,8 +24,11 @@ private class ProfileRepositoryImpl @Autowired constructor(
         mongoOperations.updateFirst(
             query(where("userId").`is`(userId)),
             Update().apply {
-                if (login != null) addToSet("login", login)
-                data?.forEach { (key, value) -> addToSet("profile.$key", value) }
+                if (login != null) set("login", login)
+                data?.forEach { (key, value) ->
+                    if (value == null) unset("profile.$key")
+                    else set("profile.$key", value)
+                }
             },
             ProfileDocument::class.java
         ).awaitSingle().also { result ->

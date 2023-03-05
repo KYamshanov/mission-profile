@@ -19,7 +19,7 @@ internal interface ProfileService {
 
     suspend fun getUserProfileById(userId: String): UserProfile
 
-    suspend fun getUserProfileByLogin(login: String): UserProfile
+    suspend fun fetchProfileByLogin(login: String): UserProfile
 
     suspend fun setUserProfileInfo(userId: String, profileInfo: UserProfile.Info)
 }
@@ -47,8 +47,15 @@ internal class ProfileServiceImpl @Autowired constructor(
             )
         }
 
-    override suspend fun getUserProfileByLogin(login: String): UserProfile =
-        profileCrudRepository.findFirstByLogin(login).let { profileDocument ->
+    override suspend fun fetchProfileByLogin(login: String): UserProfile =
+        (profileCrudRepository.findFirstByLogin(login) ?: run {
+            val sketchUserDocument = ProfileDocument(
+                userId = generateUserId(),
+                login = login,
+                profile = emptyMap()
+            )
+            profileCrudRepository.save(sketchUserDocument)
+        }).let { profileDocument ->
             UserProfile(
                 id = profileDocument.userId,
                 login = profileDocument.login,
