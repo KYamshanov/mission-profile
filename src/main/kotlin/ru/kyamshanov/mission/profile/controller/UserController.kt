@@ -5,6 +5,9 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import ru.kyamshanov.mission.profile.dto.FetchUserDtoRs
+import ru.kyamshanov.mission.profile.dto.BackRegisterRqDto
+import ru.kyamshanov.mission.profile.processor.BackRegisterProcessor
+import ru.kyamshanov.mission.profile.service.BackgroundRegistrationService
 import ru.kyamshanov.mission.profile.service.ProfileService
 
 /**
@@ -14,7 +17,8 @@ import ru.kyamshanov.mission.profile.service.ProfileService
 @RestController
 @RequestMapping("/private/profile")
 internal class UserController @Autowired constructor(
-    private val profileService: ProfileService
+    private val profileService: ProfileService,
+    private val backRegisterProcessor: BackRegisterProcessor
 ) {
 
     @GetMapping("/fetch")
@@ -28,5 +32,13 @@ internal class UserController @Autowired constructor(
             profile = fetchedProfile.data.value
         )
         return ResponseEntity(response, HttpStatus.OK)
+    }
+
+    @PostMapping("/back_reg")
+    suspend fun backgroundRegistration(
+        @RequestBody(required = true) body: BackRegisterRqDto
+    ): ResponseEntity<Unit> {
+        backRegisterProcessor.registerUser(body)
+        return ResponseEntity(HttpStatus.OK)
     }
 }

@@ -19,7 +19,7 @@ internal class InternalController @Autowired constructor(
     private val profileService: ProfileService
 ) {
 
-    @GetMapping("/fetch")
+    @GetMapping("/identify")
     suspend fun fetchUserByLogin(
         @RequestParam(required = true, name = "login") login: String
     ): ResponseEntity<RegisterRsDto> {
