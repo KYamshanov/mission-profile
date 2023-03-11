@@ -10,19 +10,19 @@ import ru.kyamshanov.mission.profile.service.BackgroundRegistrationService
 
 internal interface BackRegisterProcessor {
 
-    suspend fun registerUser(rq: BackRegisterRqDto)
+    suspend fun registerUser(userId: String, rq: BackRegisterRqDto)
 }
 
 @Component
 private class BackRegisterProcessorImpl @Autowired constructor(
     private val backgroundRegistrationService: BackgroundRegistrationService,
 ) : BackRegisterProcessor {
-    override suspend fun registerUser(rq: BackRegisterRqDto) {
-        val userProfile = rq.info.toUserProfile()
-        backgroundRegistrationService.registerUser(rq.userId, userProfile)
+    override suspend fun registerUser(userId: String, rq: BackRegisterRqDto) {
+        val userProfile = rq.toUserProfile()
+        backgroundRegistrationService.registerUser(userId, userProfile)
     }
 
-    private fun BackRegisterRqDto.Info.toUserProfile(): UserProfile.Info =
+    private fun BackRegisterRqDto.toUserProfile(): UserProfile.Info =
         buildMap<String, Any> {
             age?.let { put(AGE, it) }
             name?.let { put(NAME, it) }

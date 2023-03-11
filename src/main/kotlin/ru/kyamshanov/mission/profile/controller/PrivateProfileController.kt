@@ -4,46 +4,43 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import ru.kyamshanov.mission.profile.dto.BackRegisterRqDto
 import ru.kyamshanov.mission.profile.dto.FetchUserDtoRs
 import ru.kyamshanov.mission.profile.dto.PrivateSetProfileDtoRq
 import ru.kyamshanov.mission.profile.model.UserProfile
+import ru.kyamshanov.mission.profile.processor.BackRegisterProcessor
 import ru.kyamshanov.mission.profile.service.ProfileService
 
-/**
- * Контроллер ролей
- * @property roleService Сервис для управления ролями
- * @property userProcessor Обработчик пользователя
- */
 @RestController
 @RequestMapping("/profile/private")
 internal class PrivateProfileController @Autowired constructor(
-    private val profileService: ProfileService
+    private val profileService: ProfileService,
+    private val backRegisterProcessor: BackRegisterProcessor
 ) {
 
-    @GetMapping("get")
-    suspend fun get(
-        @RequestParam(required = true, value = "user_id") userId: String
-    ): ResponseEntity<FetchUserDtoRs> =
-        try {
-            TODO("Переписать")
-           // val profile =  //profileService.getUserProfile(userId)
-           // val response = FetchUserDtoRs(profile.data)
-            //ResponseEntity(response, HttpStatus.OK)
-        } catch (e: Throwable) {
-            e.printStackTrace()
-            ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR)
-        }
+    @GetMapping("/fetch")
+    suspend fun fetchUserById(
+        @RequestHeader(value = USER_ID_HEADER_KEY, required = true) userId: String
+    ): ResponseEntity<FetchUserDtoRs> {
+        val fetchedProfile = profileService.fetchProfileById(userId)
+        val response = FetchUserDtoRs(
+            userId = fetchedProfile.id,
+            profile = fetchedProfile.data.value
+        )
+        return ResponseEntity(response, HttpStatus.OK)
+    }
 
-    @PostMapping("set")
-    suspend fun set(
-        @RequestBody(required = true) body: PrivateSetProfileDtoRq
-    ): ResponseEntity<Unit> =
-        try {
-            TODO("Переписать")//profileService.setUserProfile(body.userId, UserProfile(body.data))
-            ResponseEntity(HttpStatus.OK)
-        } catch (e: Throwable) {
-            e.printStackTrace()
-            ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR)
-        }
+    @PostMapping("/back_reg")
+    suspend fun backgroundRegistration(
+        @RequestHeader(value = USER_ID_HEADER_KEY, required = true) userId: String,
+        @RequestBody(required = true) body: BackRegisterRqDto
+    ): ResponseEntity<Unit> {
+        backRegisterProcessor.registerUser(userId, body)
+        return ResponseEntity(HttpStatus.OK)
+    }
+
+    private companion object {
+        const val USER_ID_HEADER_KEY = "user-id"
+    }
 
 }

@@ -2,7 +2,6 @@ package ru.kyamshanov.mission.profile.model
 
 internal data class UserProfile(
     val id: String,
-    val login: String,
     val data: Info
 ) {
 

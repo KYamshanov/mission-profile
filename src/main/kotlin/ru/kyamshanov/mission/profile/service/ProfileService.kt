@@ -17,9 +17,7 @@ internal interface ProfileService {
 
     suspend fun registerUser(login: String, data: UserProfile.Info): UserProfile
 
-    suspend fun getUserProfileById(userId: String): UserProfile
-
-    suspend fun fetchProfileByLogin(login: String): UserProfile
+    suspend fun fetchProfileById(userId: String): UserProfile
 
     suspend fun setUserProfileInfo(userId: String, profileInfo: UserProfile.Info)
 }
@@ -33,32 +31,20 @@ internal class ProfileServiceImpl @Autowired constructor(
         profileCrudRepository.save(
             ProfileDocument(
                 userId = generateUserId(),
-                login = login,
                 profile = data.value
             )
         ).toUserProfile()
 
-    override suspend fun getUserProfileById(userId: String): UserProfile =
-        profileCrudRepository.findFirstByUserId(userId).first().let { profileDocument ->
-            UserProfile(
-                id = profileDocument.userId,
-                login = profileDocument.login,
-                data = UserProfile.Info(profileDocument.profile)
-            )
-        }
-
-    override suspend fun fetchProfileByLogin(login: String): UserProfile =
-        (profileCrudRepository.findFirstByLogin(login) ?: run {
+    override suspend fun fetchProfileById(userId: String): UserProfile =
+        (profileCrudRepository.findFirstByUserId(userId) ?: run {
             val sketchUserDocument = ProfileDocument(
                 userId = generateUserId(),
-                login = login,
                 profile = emptyMap()
             )
             profileCrudRepository.save(sketchUserDocument)
         }).let { profileDocument ->
             UserProfile(
                 id = profileDocument.userId,
-                login = profileDocument.login,
                 data = UserProfile.Info(profileDocument.profile)
             )
         }
