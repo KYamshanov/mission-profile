@@ -27,7 +27,6 @@ internal class BackgroundRegistrationServiceImpl @Autowired constructor(
         userProfileValidator.validate(data)
         profileRepository.mergeProfile(
             userId = userId,
-            login = null,
             data = data.value
         )
     }

@@ -2,5 +2,5 @@ package ru.kyamshanov.mission.profile.dto
 
 data class BackRegisterRqDto(
     val name: String?,
-    val age: String?
+    val age: Int?
 )

@@ -15,8 +15,6 @@ import java.util.UUID
  */
 internal interface ProfileService {
 
-    suspend fun registerUser(login: String, data: UserProfile.Info): UserProfile
-
     suspend fun fetchProfileById(userId: String): UserProfile
 
     suspend fun setUserProfileInfo(userId: String, profileInfo: UserProfile.Info)
@@ -27,18 +25,11 @@ internal class ProfileServiceImpl @Autowired constructor(
     private val profileCrudRepository: ProfileCrudRepository,
     private val profileRepository: ProfileRepository
 ) : ProfileService {
-    override suspend fun registerUser(login: String, data: UserProfile.Info): UserProfile =
-        profileCrudRepository.save(
-            ProfileDocument(
-                userId = generateUserId(),
-                profile = data.value
-            )
-        ).toUserProfile()
 
     override suspend fun fetchProfileById(userId: String): UserProfile =
         (profileCrudRepository.findFirstByUserId(userId) ?: run {
             val sketchUserDocument = ProfileDocument(
-                userId = generateUserId(),
+                userId = userId,
                 profile = emptyMap()
             )
             profileCrudRepository.save(sketchUserDocument)
@@ -52,10 +43,8 @@ internal class ProfileServiceImpl @Autowired constructor(
     override suspend fun setUserProfileInfo(userId: String, profileInfo: UserProfile.Info) {
         profileRepository.mergeProfile(
             userId = userId,
-            login = null,
             data = profileInfo.value
         )
     }
 
-    private fun generateUserId() = UUID.randomUUID().toString()
 }
