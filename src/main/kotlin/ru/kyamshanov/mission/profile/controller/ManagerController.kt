@@ -14,7 +14,7 @@ import ru.kyamshanov.mission.profile.service.ProfileService
  * @property profileService Сервис для управления профилем
  */
 @RestController
-@RequestMapping("/manager/profile")
+@RequestMapping("/profile/manager/")
 internal class ManagerController @Autowired constructor(
     private val profileService: ProfileService
 ) {

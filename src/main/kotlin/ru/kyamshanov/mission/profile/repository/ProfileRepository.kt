@@ -12,20 +12,19 @@ import ru.kyamshanov.mission.profile.persistence.ProfileDocument
 internal interface ProfileRepository {
 
     @Throws(IllegalArgumentException::class, IllegalStateException::class)
-    suspend fun mergeProfile(userId: String, login: String? = null, data: Map<String, Any?>? = null)
+    suspend fun mergeProfile(userId: String, data: Map<String, Any?>? = null)
 }
 
 @Repository
 private class ProfileRepositoryImpl @Autowired constructor(
     private val mongoOperations: ReactiveMongoOperations
 ) : ProfileRepository {
-    override suspend fun mergeProfile(userId: String, login: String?, data: Map<String, Any?>?) {
-        if (login == null && data == null) throw IllegalArgumentException()
+    override suspend fun mergeProfile(userId: String, data: Map<String, Any?>?) {
+        if (data == null) throw IllegalArgumentException()
         mongoOperations.updateFirst(
             query(where("userId").`is`(userId)),
             Update().apply {
-                if (login != null) set("login", login)
-                data?.forEach { (key, value) ->
+                data.forEach { (key, value) ->
                     if (value == null) unset("profile.$key")
                     else set("profile.$key", value)
                 }
