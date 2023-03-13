@@ -4,15 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import ru.kyamshanov.mission.profile.dto.FindUsersRqDto
-import ru.kyamshanov.mission.profile.dto.FindUsersRsDto
+import ru.kyamshanov.mission.profile.dto.*
 import ru.kyamshanov.mission.profile.dto.toDto
 import ru.kyamshanov.mission.profile.model.UsersFilter
 import ru.kyamshanov.mission.profile.service.SearchingService
 
 @RestController
-@RequestMapping("/profile/private/search")
-internal class SearchingController @Autowired constructor(
+@RequestMapping("/profile/manager/search")
+internal class SearchingManagerController @Autowired constructor(
     private val searchingService: SearchingService
 ) {
 

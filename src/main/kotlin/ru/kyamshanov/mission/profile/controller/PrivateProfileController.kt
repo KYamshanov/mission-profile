@@ -4,18 +4,18 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import ru.kyamshanov.mission.profile.dto.BackRegisterRqDto
-import ru.kyamshanov.mission.profile.dto.FetchUserDtoRs
-import ru.kyamshanov.mission.profile.dto.PrivateSetProfileDtoRq
+import ru.kyamshanov.mission.profile.dto.*
 import ru.kyamshanov.mission.profile.model.UserProfile
 import ru.kyamshanov.mission.profile.processor.BackRegisterProcessor
 import ru.kyamshanov.mission.profile.service.ProfileService
+import ru.kyamshanov.mission.profile.service.SearchingService
 
 @RestController
 @RequestMapping("/profile/private")
 internal class PrivateProfileController @Autowired constructor(
     private val profileService: ProfileService,
-    private val backRegisterProcessor: BackRegisterProcessor
+    private val backRegisterProcessor: BackRegisterProcessor,
+    private val searchingService: SearchingService
 ) {
 
     @GetMapping("/fetch")
