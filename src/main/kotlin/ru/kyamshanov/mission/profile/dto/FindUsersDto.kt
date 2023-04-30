@@ -1,29 +1,26 @@
 package ru.kyamshanov.mission.profile.dto
 
-import ru.kyamshanov.mission.profile.model.UserFace
+import ru.kyamshanov.mission.profile.model.UserInfo
+import ru.kyamshanov.mission.profile.model.UsersFilter
 
 data class FindUsersRqDto(
-    val name: String,
-    val age: Int?
+    val firstname: String?,
+    val lastname: String?,
+    val patronymic: String?,
+    val group: String?
 )
 
 data class FindUsersRsDto(
-    val users: List<FoundUserInfo>
-) {
+    val users: List<UserInfoDto>
+)
 
-    data class FoundUserInfo(
-        val id: String,
-        val name: String?,
-        val age: Int?
-    )
-}
+internal fun Collection<UserInfo>.toDto() = FindUsersRsDto(
+    users = this.map { it.toDto() }
+)
 
-internal fun Collection<UserFace>.toDto() = FindUsersRsDto(
-    users = this.map { user ->
-        FindUsersRsDto.FoundUserInfo(
-            id = user.id,
-            name = user.name,
-            age = user.age
-        )
-    }
+internal fun FindUsersRqDto.toFilter() = UsersFilter(
+    firstname = firstname,
+    lastname = lastname,
+    patronymic = patronymic,
+    group = group
 )

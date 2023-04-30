@@ -7,23 +7,21 @@ import org.springframework.web.bind.annotation.*
 import ru.kyamshanov.mission.profile.dto.*
 import ru.kyamshanov.mission.profile.service.SearchingService
 
+/**
+ * [!] Эдп поинты для внутренней сети
+ */
 @RestController
-@RequestMapping("/profile/private/search")
-internal class SearchingPrivateController @Autowired constructor(
+@RequestMapping("/profile/internal/")
+internal class InternalController @Autowired constructor(
     private val searchingService: SearchingService
 ) {
 
-    @PostMapping("/map")
+        @PostMapping("/search/map")
     suspend fun mappingUsers(
         @RequestBody(required = true) body: MappingRqDto,
-        @RequestHeader(value = USER_ID_HEADER_KEY, required = true) userId: String,
     ): ResponseEntity<MappingRsDto> {
         val userFaces = searchingService.mappingUsers(body)
         val response = userFaces.toMappingDto()
         return ResponseEntity(response, HttpStatus.OK)
-    }
-
-    private companion object {
-        const val USER_ID_HEADER_KEY = "user-id"
     }
 }

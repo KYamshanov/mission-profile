@@ -1,16 +1,22 @@
 package ru.kyamshanov.mission.profile.repository
 
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toCollection
 import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.reactor.awaitSingle
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.mongodb.core.ReactiveMongoOperations
+import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Criteria.where
 import org.springframework.data.mongodb.core.query.Query.query
 import org.springframework.data.mongodb.core.query.Update
 import org.springframework.stereotype.Repository
-import ru.kyamshanov.mission.profile.model.UserFace
+import ru.kyamshanov.mission.profile.model.ProfileInfoKeys.FIRSTNAME
+import ru.kyamshanov.mission.profile.model.ProfileInfoKeys.GROUP
+import ru.kyamshanov.mission.profile.model.ProfileInfoKeys.LASTNAME
+import ru.kyamshanov.mission.profile.model.ProfileInfoKeys.PATRONYMIC
+import ru.kyamshanov.mission.profile.model.UserInfo
 import ru.kyamshanov.mission.profile.persistence.ProfileDocument
 import ru.kyamshanov.mission.profile.persistence.ProfileFaceDocument
 import ru.kyamshanov.mission.profile.persistence.toDomain
@@ -21,7 +27,7 @@ internal interface ProfileRepository {
     suspend fun mergeProfile(userId: String, data: Map<String, Any?>? = null)
 
     @Throws(IllegalArgumentException::class, IllegalStateException::class)
-    suspend fun searchByNameAndAge(name: String, age: Int?): List<UserFace>
+    fun search(firstname: String, lastname: String, patronymic: String, group: String?): Flow<ProfileFaceDocument>
 }
 
 @Repository
@@ -44,12 +50,20 @@ private class ProfileRepositoryImpl @Autowired constructor(
         }
     }
 
-    override suspend fun searchByNameAndAge(name: String, age: Int?): List<UserFace> =
+    override fun search(
+        firstname: String,
+        lastname: String,
+        patronymic: String,
+        group: String?
+    ): Flow<ProfileFaceDocument> =
         mongoOperations.find(
             query(
-                where("profile.name").regex("(?i)$name")
-                    .run { if (age != null) and("profile.age").`is`(age) else this }
+                Criteria().orOperator(
+                    where("profile.$FIRSTNAME").regex("(?i)$firstname"),
+                    where("profile.$LASTNAME").regex("(?i)$lastname"),
+                    where("profile.$PATRONYMIC").regex("(?i)$patronymic")
+                ).run { if (group != null) and("profile.$GROUP").`is`(group) else this }
             ),
             ProfileFaceDocument::class.java
-        ).asFlow().map { it.toDomain() }.toCollection(mutableListOf())
+        ).asFlow()
 }

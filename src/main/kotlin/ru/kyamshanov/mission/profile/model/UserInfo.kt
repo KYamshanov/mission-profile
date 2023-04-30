@@ -1,6 +1,7 @@
-package ru.kyamshanov.mission.profile.dto
+package ru.kyamshanov.mission.profile.model
 
-data class BackRegisterRqDto(
+internal data class UserInfo(
+    val id: String,
     val firstname: String?,
     val lastname: String?,
     val patronymic: String?,
