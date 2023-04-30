@@ -1,6 +1,8 @@
 package ru.kyamshanov.mission.profile.model
 
 internal data class UsersFilter(
-    val name: String,
-    val age: Int?,
+    val firstname: String?,
+    val lastname: String?,
+    val patronymic: String?,
+    val group: String?
 )
